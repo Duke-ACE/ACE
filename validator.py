@@ -41,8 +41,6 @@ def getData(data):
 
 record_id = getData(records)
 
-flagged = []
-flag_holders = []
 
 print str(record_id['record_id'].values[0])
 
@@ -74,25 +72,19 @@ for i in range(0,len(record_id['record_id'])):
             ne = (entry1 != entry2).any(1)
             ne_stacked = (entry1 != entry2).stack()
             compare = ne_stacked[ne_stacked]
-            print compare
             if(len(compare) == 0):
                   log_df['Entries are Equal'].loc[i] = "Yes"
             else:
                   log_df['Entries are Equal'].loc[i] = "No"
-                  if(len(flagged) != 0):
-                        flagged[:] = []
-                  return flagged
-
+                  flagged = ""
                   for flags in compare.index:
-                        flagged.append(flags[1])
+                        flagged=flagged +" " + str(flags[1])
+                        print flags[1]
+                        # flagged.append(flags[1])
                         log_df['Variables Wrong'].loc[i] = flagged
             log_df["Second Entry Exist"].loc[i] = "Yes" 
       except IndexError:
             log_df["Second Entry Exist"].loc[i] = "No"
-
-print flag_holders
-
-
 
 
 
