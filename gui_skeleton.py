@@ -1,3 +1,29 @@
+import os
+import urllib
+from requests import post
+import urllib.request
+import wx
+import sys
+import requests
+import urllib
+from requests import post
+import pandas as pd
+import json
+import os.path
+import csv
+import numpy as np
+import datetime
+
+
+
+
+class RedirectText(object):
+    def __init__(self,aWxTextCtrl):
+        self.out=aWxTextCtrl
+    def write(self,string):
+        self.out.WriteText(string)
+
+
 
 # style= wx.DEFAULT_FRAME_STYLE & ~wx.MAXIMIZE_BOX ^ wx.RESIZE_BORDER 
 
@@ -17,24 +43,24 @@ class Frame(wx.Frame):
     
 #---Intialize the methods to be used within the combo selector class----#
 
-        project_name = [Project(0, "Personal Sandbox", ""), Project(1, "ACE Sandbox", "")]
+        # project_name = [Project(0, "Personal Sandbox", ""), Project(1, "ACE Sandbox", "")]
         
         
-        sas_scoring = [Scoring(0, "CBCL", "cbcl_ages_155", "CBCLScoring.sas")]
+        # sas_scoring = [Scoring(0, "CBCL", "cbcl_ages_155", "CBCLScoring.sas")]
 
 
-        visit_type = [Visit(0, "Visit 1" , "visit_1_arm_1"), Visit(1, "Visit 2", "visit_1_arm_2")]
+        # visit_type = [Visit(0, "Visit 1" , "visit_1_arm_1"), Visit(1, "Visit 2", "visit_1_arm_2")]
 
 #Begin the creation of widgets
-        self.cb_project = wx.ComboBox(self.panel, -1, value="Select Project", style=wx.CB_DROPDOWN) 
-        self.widgetProject(self.cb_project, project_name)
+        # self.cb_project = wx.ComboBox(self.panel, -1, value="Select Project", style=wx.CB_DROPDOWN) 
+        # self.widgetProject(self.cb_project, project_name)
         
-        self.cb_scoring = wx.ComboBox(self.panel, -1, value="Select Scoring", size=[125,20])
-        self.widgetScoring(self.cb_scoring, sas_scoring)
+        # self.cb_scoring = wx.ComboBox(self.panel, -1, value="Select Scoring", size=[125,20])
+        # self.widgetScoring(self.cb_scoring, sas_scoring)
         
 
-        self.cb_visit = wx.ComboBox(self.panel, -1, value="Select Visit", size=[125,20])
-        self.widgetVisit(self.cb_visit, visit_type)
+        # self.cb_visit = wx.ComboBox(self.panel, -1, value="Select Visit", size=[125,20])
+        # self.widgetVisit(self.cb_visit, visit_type)
         
 
         self.statusbar = self.CreateStatusBar()
@@ -44,8 +70,8 @@ class Frame(wx.Frame):
         self.Bind(wx.EVT_CLOSE, self.OnCloseWindow)
         
 
-        self.btn = wx.Button(self.panel, -1, "Record ID", pos=[1,1])
-        self.Bind(wx.EVT_BUTTON, self.GetRecordID, self.btn)
+        # self.btn = wx.Button(self.panel, -1, "Record ID", pos=[1,1])
+        # self.Bind(wx.EVT_BUTTON, self.GetRecordID, self.btn)
         
 
 
@@ -64,16 +90,16 @@ class Frame(wx.Frame):
 
         sizer = wx.BoxSizer(wx.VERTICAL)
 
-        top_flags = wx.SizerFlags().Expand().Border(wx.ALL, 1).Proportion(0)
+        # top_flags = wx.SizerFlags().Expand().Border(wx.ALL, 1).Proportion(0)
 
 
-        topsizer = wx.BoxSizer(wx.HORIZONTAL)
-        topsizer.Add(self.cb_project, top_flags)
-        topsizer.Add(self.cb_scoring, top_flags)
-        topsizer.Add(self.cb_visit, top_flags)
+        # topsizer = wx.BoxSizer(wx.HORIZONTAL)
+        # # topsizer.Add(self.cb_project, top_flags)
+        # # topsizer.Add(self.cb_scoring, top_flags)
+        # # topsizer.Add(self.cb_visit, top_flags)
 
         
-        sizer.Add(topsizer)
+        # sizer.Add(topsizer)
 
         btm_flags = wx.SizerFlags().Expand()
 
@@ -111,39 +137,39 @@ class Frame(wx.Frame):
         self.Destroy()
 
 
-    def widgetProject(self, widget, objects):
-        """"""
-        for obj in objects:
-            widget.Append(obj.project, obj)
-        widget.Bind(wx.EVT_COMBOBOX, self.onProjectSelect)
+    # def widgetProject(self, widget, objects):
+    #     """"""
+    #     for obj in objects:
+    #         widget.Append(obj.project, obj)
+    #     widget.Bind(wx.EVT_COMBOBOX, self.onProjectSelect)
     
-    def widgetScoring(self, widget, objects):
-        """"""
-        for obj in objects:
-            widget.Append(obj.scoring_package, obj)
-        widget.Bind(wx.EVT_COMBOBOX, self.onScoringSelect)
+    # def widgetScoring(self, widget, objects):
+    #     """"""
+    #     for obj in objects:
+    #         widget.Append(obj.scoring_package, obj)
+    #     widget.Bind(wx.EVT_COMBOBOX, self.onScoringSelect)
 
-    def widgetVisit(self, widget, objects):
-        """"""
-        for obj in objects:
-            widget.Append(obj.visit, obj)
-        widget.Bind(wx.EVT_COMBOBOX, self.onVisitSelect)
-
-
-    def onScoringSelect(self, event):
-        obj = self.cb_scoring.GetClientData(self.cb_scoring.GetSelection())
-        return obj.scoring_package, obj.intrument, obj.scoring_path
+    # def widgetVisit(self, widget, objects):
+    #     """"""
+    #     for obj in objects:
+    #         widget.Append(obj.visit, obj)
+    #     widget.Bind(wx.EVT_COMBOBOX, self.onVisitSelect)
 
 
-    def onProjectSelect(self, event):
-        	obj = self.cb_project.GetClientData(self.cb_project.GetSelection())
-        	return obj.token, obj.project
+    # def onScoringSelect(self, event):
+    #     obj = self.cb_scoring.GetClientData(self.cb_scoring.GetSelection())
+    #     return obj.scoring_package, obj.intrument, obj.scoring_path
+
+
+    # def onProjectSelect(self, event):
+    #     	obj = self.cb_project.GetClientData(self.cb_project.GetSelection())
+    #     	return obj.token, obj.project
 
 
 
-    def onVisitSelect(self, event):
-        obj = self.cb_visit.GetClientData(self.cb_visit.GetSelection())
-        return obj.visit, obj.visit_name
+    # def onVisitSelect(self, event):
+    #     obj = self.cb_visit.GetClientData(self.cb_visit.GetSelection())
+    #     return obj.visit, obj.visit_name
 
 
 
@@ -166,79 +192,12 @@ class Frame(wx.Frame):
     def run(self, event):
         print("Executing...")
         record = self.GetRecordID(event)
-        token, project_name = self.onProjectSelect(event)
-        scoring_package, instrument, scoring_path = self.onScoringSelect(event)
-        visit, visit_name = self.onVisitSelect(event)
-
-
-
-        data = {
-            'token': str(token),
-            'content': 'record',
-            'format': 'csv',
-            'type': 'flat',
-            'records[0]': str(record),
-            'forms[0]': str(instrument),
-            'events[0]': str(visit_name),
-            'rawOrLabel': 'raw',
-            'rawOrLabelHeaders': 'raw',
-            'exportCheckboxLabel': 'false',
-            'exportSurveyFields': 'false',
-            'exportDataAccessGroups': 'false',
-            'returnFormat': 'json'
-        }
-
-
-        record_id = getData(records)
-
-        log_df = pandas.DataFrame(columns=['Record_ID', "Second Entry Exist", 'Variables Wrong', 'Entries are Equal'], index=range(len(record_id['record_id'])))
-
-        for i in range(0,len(record_id['record_id'])):
-              ids = str(record_id['record_id'].values[i])
-              log_df['Record_ID'].loc[i] = ids
-              data = {
-                  'token': '',
-                  'content': 'record',
-                  'format': 'json',
-                  'type': 'flat',
-                  'records[0]': ids ,
-                  'forms[0]': 'cbcl_ages_155',
-                  'rawOrLabel': 'raw',
-                  'rawOrLabelHeaders': 'raw',
-                  'exportCheckboxLabel': 'false',
-                  'exportSurveyFields': 'false',
-                  'exportDataAccessGroups': 'false',
-                  'returnFormat': 'json'
-              }
-              entry = getData(data)
-              try:
-                    entry1 = entry.iloc[[0]]
-                    entry2 = entry.iloc[[1]]
-                    entry1.index = ['x']
-                    entry2.index = ['x']
-                    ne = (entry1 != entry2).any(1)
-                    ne_stacked = (entry1 != entry2).stack()
-                    compare = ne_stacked[ne_stacked]
-                    if(len(compare) == 0):
-                          log_df['Entries are Equal'].loc[i] = "Yes"
-                    else:
-                          log_df['Entries are Equal'].loc[i] = "No"
-                          flagged = ""
-                          for flags in compare.index:
-                                flagged=flagged +" " + str(flags[1])
-                                print(flags[1])
-                                # flagged.append(flags[1])
-                                log_df['Variables Wrong'].loc[i] = flagged
-                    log_df["Second Entry Exist"].loc[i] = "Yes" 
-              except IndexError:
-                    log_df["Second Entry Exist"].loc[i] = "No"
-
-
+        # token, project_name = self.onProjectSelect(event)
+        # scoring_package, instrument, scoring_path = self.onScoringSelect(event)
+        # visit, visit_name = self.onVisitSelect(event)
+        
 
 app = wx.App()
 frame = Frame(None, 'ACE Scoring')
 app.MainLoop()
-
-
-
 
