@@ -201,3 +201,75 @@ app = wx.App()
 frame = Frame(None, 'ACE Scoring')
 app.MainLoop()
 
+
+
+
+
+
+        data = {
+            'token': str(token),
+            'content': 'record',
+            'format': 'csv',
+            'type': 'flat',
+            'records[0]': str(record),
+            'forms[0]': str(instrument),
+            'events[0]': str(visit_name),
+            'rawOrLabel': 'raw',
+            'rawOrLabelHeaders': 'raw',
+            'exportCheckboxLabel': 'false',
+            'exportSurveyFields': 'false',
+            'exportDataAccessGroups': 'false',
+            'returnFormat': 'json'
+        }
+
+
+        record_id = getData(records)
+
+        log_df = pandas.DataFrame(columns=['Record_ID', "Second Entry Exist", 'Variables Wrong', 'Entries are Equal'], index=range(len(record_id['record_id'])))
+
+        for i in range(0,len(record_id['record_id'])):
+              ids = str(record_id['record_id'].values[i])
+              log_df['Record_ID'].loc[i] = ids
+              data = {
+                  'token': '',
+                  'content': 'record',
+                  'format': 'json',
+                  'type': 'flat',
+                  'records[0]': ids ,
+                  'forms[0]': 'cbcl_ages_155',
+                  'rawOrLabel': 'raw',
+                  'rawOrLabelHeaders': 'raw',
+                  'exportCheckboxLabel': 'false',
+                  'exportSurveyFields': 'false',
+                  'exportDataAccessGroups': 'false',
+                  'returnFormat': 'json'
+              }
+              entry = getData(data)
+              try:
+                    entry1 = entry.iloc[[0]]
+                    entry2 = entry.iloc[[1]]
+                    entry1.index = ['x']
+                    entry2.index = ['x']
+                    ne = (entry1 != entry2).any(1)
+                    ne_stacked = (entry1 != entry2).stack()
+                    compare = ne_stacked[ne_stacked]
+                    if(len(compare) == 0):
+                          log_df['Entries are Equal'].loc[i] = "Yes"
+                    else:
+                          log_df['Entries are Equal'].loc[i] = "No"
+                          flagged = ""
+                          for flags in compare.index:
+                                flagged=flagged +" " + str(flags[1])
+                                print(flags[1])
+                                # flagged.append(flags[1])
+                                log_df['Variables Wrong'].loc[i] = flagged
+                    log_df["Second Entry Exist"].loc[i] = "Yes" 
+              except IndexError:
+                    log_df["Second Entry Exist"].loc[i] = "No"
+
+
+
+app = wx.App()
+frame = Frame(None, 'ACE Scoring')
+app.MainLoop()
+
