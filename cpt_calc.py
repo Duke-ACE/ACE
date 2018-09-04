@@ -176,29 +176,31 @@ class Frame(wx.Frame):
 
 		date = now.strftime("%Y-%m-%d")
 
-		summary = {"date": [date], "numStimuli": [numStim] , "hit" : [hit], "Comissions": [comission], "Omissions" : [omission],   "MeanHitRT" : [MeanHitRT], "RTSD": [RTSD], "Dprime" : [Dprime], "Beta" : [Beta], "Completed" : [completed]}
+		summary = {"test_date_cpt": [date], "cpt_numstim": [numStim] , "cpt_hits" : [hit], "cpt_comissions": [comission], "cpt_omissions" : [omission],   "cpt_mrt" : [MeanHitRT], "cpt_rtsd": [RTSD], "cpt_dprime" : [Dprime], "cpt_beta" : [Beta], "cpt_validend" : [completed]}
 
 		out_df = pd.DataFrame(data=summary)
 	
-		if(out_df["Dprime"].loc[0] == float('Inf')):
-			out_df["Dprime"].loc[0] = 6.18046
+		if(out_df["cpt_dprime"].loc[0] == float('Inf')):
+			out_df["cpt_dprime"].loc[0] = 6.18046
 
 
-		if(out_df["Dprime"].loc[0] == 6.18046):
-			out_df["Beta"].loc[0] = 0
+		if(out_df["cpt_dprime"].loc[0] == 6.18046):
+			out_df["cpt_beta"].loc[0] = 0
 
-		if(out_df["numStimuli"].loc[0] != 200):
-			out_df["Completed"].loc[0] = False
+		if(out_df["cpt_numstim"].loc[0] != 200):
+			out_df["cpt_validend"].loc[0] = 0
+		else:
+			out_df["cpt_validend"].loc[0] = 1
 
 		# print(out_df["Dprime"] == "inf")
 
 		out = out_df.to_dict(orient='records')
-		out[0]['record_id'] = str(record) 
+		out[0]['ace_id'] = str(record) 
 		out_json = json.dumps(out)
 
 
 		data_import = {
-		    'token': 'Place p2 token here.........',
+		    'token': '',
 		    'content': 'record',
 		    'format': 'json',
 		    'type': 'flat',
@@ -209,11 +211,13 @@ class Frame(wx.Frame):
 		    'returnFormat': 'json',
 		}
 
-		# r = post("https://redcap.duke.edu/redcap/api/", data_import)
+		r = post("https://redcap.duke.edu/redcap/api/", data_import)
+
+		print(out_json)
 
 		# print(r)
 		
-		# print(r.status_code)
+		print(r.status_code)
 
 		out_df.to_csv("cpt_{}_{}".format(record, date), index = False)
 
