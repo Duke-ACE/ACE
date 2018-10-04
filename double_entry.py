@@ -32,11 +32,11 @@ class Scoring:
 		self.instrument = instrument
 		self.scoring_path = scoring_path
 
-# class Visit:
-#     def __init__(self, id, visit, visit_name):
-#         self.id = id 
-#         self.visit = visit 
-#         self.visit_name = visit_name
+class Visit:
+    def __init__(self, id, visit, visit_name):
+        self.id = id 
+        self.visit = visit 
+        self.visit_name = visit_name
 
 
 class RedirectText(object):
@@ -67,11 +67,11 @@ class Frame(wx.Frame):
 	
 #---Intialize the methods to be used within the combo selector class----#
 
-		project_name = [Project(0, "Project 2", "E643DF26872773CD6C4BE421CF36A476")]
-		entry_scoring = [Scoring(0, "PEFB", "pefb"), Scoring(1, "CPT", "CPT"), Scoring(2, "PCI Log", "pci_log"), Scoring(3, "EEG Run Log", "eeg_run_log"),Scoring(4, "EGT Run Log", "egt_run_log"), Scoring(5, "Leiter", "leiter3")]
+		project_name = [Project(0, "ARC", "")]
+		entry_scoring = [Scoring(0, "ACE Subject Medical Hisotry", "ace_subject_medical_history"), Scoring(1, "ACE Family Medical History", "ace_family_medical_history")]
 
 
-		# visit_type = [Visit(0, "Visit 1" , "visit_1_arm_1")]
+		visit_type = [Visit(0, "TD" , "arc_td_visit_arm_1"), Visit(1, "ASD" , "arc_asd_visit_arm_1"), Visit(1, "ADHD" , "arc_adhd_visit_arm_1")]
 
 #Begin the creation of widgets
 		self.cb_project = wx.ComboBox(self.panel, -1, value="Select Project", size=[125,20], style=wx.CB_DROPDOWN) 
@@ -81,8 +81,8 @@ class Frame(wx.Frame):
 		self.widgetScoring(self.cb_scoring, entry_scoring)
 		
 
-		# self.cb_visit = wx.ComboBox(self.panel, -1, value="Select Visit", size=[125,20])
-		# self.widgetVisit(self.cb_visit, visit_type)
+		self.cb_visit = wx.ComboBox(self.panel, -1, value="Select Visit", size=[125,20])
+		self.widgetVisit(self.cb_visit, visit_type)
 		
 
 		self.statusbar = self.CreateStatusBar()
@@ -118,7 +118,7 @@ class Frame(wx.Frame):
 		topsizer = wx.BoxSizer(wx.HORIZONTAL)
 		topsizer.Add(self.cb_project, top_flags)
 		topsizer.Add(self.cb_scoring, top_flags)
-		# topsizer.Add(self.cb_visit, top_flags)
+		topsizer.Add(self.cb_visit, top_flags)
 
 		
 		sizer.Add(topsizer)
@@ -204,7 +204,7 @@ class Frame(wx.Frame):
 		record = self.GetRecordID(event)
 		token, project_name = self.onProjectSelect(event)
 		instrument, scoring_path = self.onScoringSelect(event)
-		# visit, visit_name = self.onVisitSelect(event)
+		visit, visit_name = self.onVisitSelect(event)
 
 
 
@@ -228,6 +228,7 @@ class Frame(wx.Frame):
 			'type': 'flat',
 			'records[0]': str(record),
 			'forms[0]': str(instrument),
+			'events[0]': str(visit),
 			'rawOrLabel': 'raw',
 			'rawOrLabelHeaders': 'label',
 			'exportCheckboxLabel': 'false',
@@ -253,7 +254,7 @@ class Frame(wx.Frame):
 				  log_df['Variables Wrong'] = "No"
 			else:
 				  log_df['Entries are Equal'] = "No"
-				  flagged = ""
+				  flagged = " "
 				  for flags in compare.index:
 						flagged=flagged +" " + str(flags[1])
 						print(flags[1])
@@ -264,7 +265,7 @@ class Frame(wx.Frame):
 			log_df["Second Entry Exist"] = "No"
 
 		log_df.set_index("Record ID")
-		log_df.to_csv("double_entry_log.csv")
+		log_df.to_csv("double_entry_{}_{}_log.csv".format(str(record), str(instrument)))
 		print(log_df)
 
 app = wx.App()
@@ -276,4 +277,4 @@ app.MainLoop()
 
 
 
-# print records
+
